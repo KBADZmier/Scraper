@@ -9,12 +9,19 @@ from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
 
 
+allow_origins = [
+    "http://localhost",
+    "http://localhost:5173",  # Twój frontend
+    "http://127.0.0.1:5173"
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  
+    allow_origins=allow_origins,
     allow_credentials=True,
-    allow_methods=["GET"], 
-    allow_headers=["*"],  
+    allow_methods=["*"],
+    allow_headers=["*"],
+    
 )
 print("✅ CORS powinien działać!")
 # 🔄 Rotacja User-Agentów
@@ -55,6 +62,10 @@ async def scrape_google(query):
 async def search(query: str):
     """ API do wyszukiwania """
     results = await scrape_google(query)
+    return {"results": results}
+async def search(query: str):
+    results = await scrape_google(query)
+    print("Wyniki:", results)  # <-- Sprawdź, co zwraca backend!
     return {"results": results}
 
 # 🚀 Uruchomienie serwera: `uvicorn app:app --reload`
